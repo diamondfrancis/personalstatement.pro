@@ -77,13 +77,6 @@ const communityEfforts = [
     statLabel: 'free resources',
   },
 ]
-
-const team = [
-  { name: 'Alex Morgan', role: 'Co-Founder & CEO', emoji: '👩‍💻' },
-  { name: 'James Okafor', role: 'Co-Founder & CTO', emoji: '👨‍💻' },
-  { name: 'Priya Sharma', role: 'Head of Content', emoji: '✍️' },
-  { name: 'Liam Chen', role: 'Community Lead', emoji: '🤝' },
-]
 </script>
 
 <template>
@@ -180,21 +173,6 @@ const team = [
             </div>
             <h3>{{ c.title }}</h3>
             <p>{{ c.desc }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Team -->
-    <section class="section team-section">
-      <div class="section-inner">
-        <h2 class="section-title">Meet the Team</h2>
-        <p class="section-subtitle">A small team with a big mission.</p>
-        <div class="team-grid">
-          <div v-for="(t, i) in team" :key="i" class="team-card">
-            <span class="team-emoji">{{ t.emoji }}</span>
-            <h4>{{ t.name }}</h4>
-            <p>{{ t.role }}</p>
           </div>
         </div>
       </div>
@@ -518,45 +496,6 @@ const team = [
   line-height: 1.6;
 }
 
-/* ───── Team ───── */
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-}
-
-.team-card {
-  text-align: center;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 2rem 1.25rem;
-  transition: transform 0.25s ease, border-color 0.25s ease;
-}
-
-.team-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(59, 130, 246, 0.25);
-}
-
-.team-emoji {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: 0.75rem;
-}
-
-.team-card h4 {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.2rem;
-}
-
-.team-card p {
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.8rem;
-}
-
 /* ───── CTA ───── */
 .cta-section {
   padding: 4rem 1.5rem 5rem;
@@ -641,10 +580,6 @@ const team = [
     grid-template-columns: 1fr;
   }
 
-  .team-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .cta-inner {
     padding: 2.5rem 1.5rem;
   }
@@ -655,10 +590,6 @@ const team = [
 }
 
 @media (max-width: 480px) {
-  .team-grid {
-    grid-template-columns: 1fr;
-  }
-
   .section {
     padding: 2.5rem 0.75rem;
   }
