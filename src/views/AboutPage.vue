@@ -49,27 +49,6 @@ const values = [
 
 const communityEfforts = [
   {
-    icon: '🎓',
-    title: 'University Partnerships',
-    desc: 'We work with career services at 30+ universities to provide free premium access to students who need it most.',
-    stat: '30+',
-    statLabel: 'partner universities',
-  },
-  {
-    icon: '📚',
-    title: 'Free Workshops',
-    desc: 'Monthly virtual workshops on personal branding, statement writing, and interview preparation — open to everyone.',
-    stat: '120+',
-    statLabel: 'workshops held',
-  },
-  {
-    icon: '🌱',
-    title: 'Scholarship Fund',
-    desc: 'A portion of every premium subscription funds our scholarship programme for first-generation university applicants.',
-    stat: '£50K+',
-    statLabel: 'awarded so far',
-  },
-  {
     icon: '🔓',
     title: 'Open Source',
     desc: 'Our blog content, writing guides, and community templates are freely available for educators and mentors to use.',
