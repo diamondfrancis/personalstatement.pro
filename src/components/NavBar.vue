@@ -55,7 +55,6 @@ onUnmounted(() => {
         <li><RouterLink to="/blog">Blog</RouterLink></li>
         <li><RouterLink to="/jobs">Jobs</RouterLink></li>
         <li><RouterLink to="/about">About</RouterLink></li>
-        <li><RouterLink to="/pricing">Pricing</RouterLink></li>
       </ul>
 
       <!-- Hamburger button -->
@@ -83,7 +82,6 @@ onUnmounted(() => {
         <li><RouterLink to="/blog" @click="closeMenu">📰 Blog</RouterLink></li>
         <li><RouterLink to="/jobs" @click="closeMenu">💼 Job Prospects</RouterLink></li>
         <li><RouterLink to="/about" @click="closeMenu">ℹ️ About</RouterLink></li>
-        <li><RouterLink to="/pricing" @click="closeMenu">💎 Pricing</RouterLink></li>
       </ul>
     </div>
   </nav>
