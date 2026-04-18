@@ -6,36 +6,25 @@ import { useAuth } from '../stores/auth'
 const { isAuthenticated, user, isPro } = useAuth()
 const route = useRoute()
 
-const mobileMenuOpen = ref(false)
+const menuOpen = ref(false)
 const scrolled = ref(false)
 
 function toggleMenu() {
-  mobileMenuOpen.value = !mobileMenuOpen.value
-  if (mobileMenuOpen.value) {
-    document.body.style.overflow = 'hidden'
-  } else {
-    document.body.style.overflow = ''
-  }
+  menuOpen.value = !menuOpen.value
+  document.body.style.overflow = menuOpen.value ? 'hidden' : ''
 }
 
 function closeMenu() {
-  mobileMenuOpen.value = false
+  menuOpen.value = false
   document.body.style.overflow = ''
 }
 
-// Close menu on route change
-watch(() => route.path, () => {
-  closeMenu()
-})
+watch(() => route.path, closeMenu)
 
-// Close menu on Escape key
 function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape' && mobileMenuOpen.value) {
-    closeMenu()
-  }
+  if (e.key === 'Escape') closeMenu()
 }
 
-// Add scroll shadow effect
 function onScroll() {
   scrolled.value = window.scrollY > 10
 }
@@ -52,9 +41,9 @@ onUnmounted(() => {
   document.body.style.overflow = ''
 })
 
-const userInitial = computed(() => {
-  return (user.value?.name ?? 'U').charAt(0).toUpperCase()
-})
+const userInitial = computed(() =>
+  (user.value?.name ?? 'U').charAt(0).toUpperCase()
+)
 </script>
 
 <template>
@@ -62,59 +51,99 @@ const userInitial = computed(() => {
     <div class="navbar-inner">
       <RouterLink to="/" class="navbar-brand" @click="closeMenu">
         <span class="brand-icon">📝</span>
-        <span class="brand-text">Personal Statement Pro</span>
+        <span class="brand-text">PersonalStatement.pro</span>
       </RouterLink>
 
-      <button class="hamburger" :class="{ active: mobileMenuOpen }" @click="toggleMenu" aria-label="Toggle navigation">
+      <!-- Desktop links -->
+      <ul class="nav-links-desktop">
+        <li><RouterLink to="/">Home</RouterLink></li>
+        <li><RouterLink to="/analyzer">Analyzer</RouterLink></li>
+        <li><RouterLink to="/blog">Blog</RouterLink></li>
+        <li><RouterLink to="/jobs">Jobs</RouterLink></li>
+        <li><RouterLink to="/about">About</RouterLink></li>
+        <li>
+          <RouterLink to="/pricing" class="nav-pricing">
+            <span v-if="!isPro">Pricing</span>
+            <span v-else class="pro-tag">PRO ✓</span>
+          </RouterLink>
+        </li>
+        <li v-if="!isAuthenticated">
+          <RouterLink to="/auth" class="nav-cta">Sign In</RouterLink>
+        </li>
+        <li v-else>
+          <RouterLink to="/profile" class="nav-profile">
+            <span class="nav-avatar">{{ userInitial }}</span>
+            <span class="nav-profile-name">{{ user?.name || 'Profile' }}</span>
+          </RouterLink>
+        </li>
+      </ul>
+
+      <!-- Hamburger button -->
+      <button
+        class="hamburger"
+        :class="{ active: menuOpen }"
+        @click="toggleMenu"
+        :aria-expanded="menuOpen"
+        aria-label="Menu"
+      >
         <span></span>
         <span></span>
         <span></span>
       </button>
+    </div>
 
-      <div class="nav-links-wrapper" :class="{ open: mobileMenuOpen }">
-        <div class="nav-overlay" @click="closeMenu"></div>
-        <ul class="nav-links" :class="{ open: mobileMenuOpen }">
-          <li><RouterLink to="/" @click="closeMenu">Home</RouterLink></li>
-          <li><RouterLink to="/analyzer" @click="closeMenu">Analyze Statement</RouterLink></li>
-          <li><RouterLink to="/blog" @click="closeMenu">Blog</RouterLink></li>
-          <li><RouterLink to="/jobs" @click="closeMenu">Jobs</RouterLink></li>
-          <li><RouterLink to="/about" @click="closeMenu">About</RouterLink></li>
-          <li>
-            <RouterLink to="/pricing" @click="closeMenu" class="nav-pricing">
-              <span v-if="!isPro">Pricing</span>
-              <span v-else class="pro-tag">PRO ✓</span>
-            </RouterLink>
-          </li>
-          <li v-if="!isAuthenticated" class="nav-cta-item">
-            <RouterLink to="/auth" @click="closeMenu" class="nav-cta">Sign In</RouterLink>
-          </li>
-          <li v-else class="nav-cta-item">
-            <RouterLink to="/profile" @click="closeMenu" class="nav-profile">
-              <span class="nav-avatar">{{ userInitial }}</span>
-              <span class="nav-profile-name">{{ user?.name || 'Profile' }}</span>
-            </RouterLink>
-          </li>
-        </ul>
-      </div>
+    <!-- Mobile menu -->
+    <Transition name="fade">
+      <div v-if="menuOpen" class="mobile-overlay" @click="closeMenu"></div>
+    </Transition>
+    <div class="mobile-menu" :class="{ open: menuOpen }">
+      <ul class="mobile-links">
+        <li><RouterLink to="/" @click="closeMenu">🏠 Home</RouterLink></li>
+        <li><RouterLink to="/analyzer" @click="closeMenu">📊 Analyze Statement</RouterLink></li>
+        <li><RouterLink to="/blog" @click="closeMenu">📰 Blog</RouterLink></li>
+        <li><RouterLink to="/jobs" @click="closeMenu">💼 Job Prospects</RouterLink></li>
+        <li><RouterLink to="/about" @click="closeMenu">ℹ️ About</RouterLink></li>
+        <li>
+          <RouterLink to="/pricing" @click="closeMenu">
+            <span v-if="!isPro">💎 Pricing</span>
+            <span v-else class="pro-tag-mobile">⭐ PRO Active</span>
+          </RouterLink>
+        </li>
+        <li class="mobile-divider"></li>
+        <li v-if="!isAuthenticated">
+          <RouterLink to="/auth" @click="closeMenu" class="mobile-cta">Sign In / Sign Up</RouterLink>
+        </li>
+        <li v-else>
+          <RouterLink to="/profile" @click="closeMenu" class="mobile-profile-link">
+            <span class="nav-avatar-lg">{{ userInitial }}</span>
+            <div>
+              <span class="mobile-profile-name">{{ user?.name || 'Profile' }}</span>
+              <span class="mobile-profile-sub">View Profile</span>
+            </div>
+          </RouterLink>
+        </li>
+      </ul>
     </div>
   </nav>
 </template>
 
 <style scoped>
+/* ═══════ Base navbar ═══════ */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(11, 17, 32, 0.97);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   transition: box-shadow 0.3s ease;
 }
 
 .navbar.scrolled {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
 }
 
 .navbar-inner {
@@ -127,63 +156,62 @@ const userInitial = computed(() => {
   height: 64px;
 }
 
+/* ═══════ Brand ═══════ */
 .navbar-brand {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
   color: #fff;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   flex-shrink: 0;
 }
 
 .brand-icon {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
 }
 
-/* Desktop nav links */
-.nav-links-wrapper {
-  display: contents;
-}
-
-.nav-overlay {
-  display: none;
-}
-
-.nav-links {
+/* ═══════ Desktop nav links ═══════ */
+.nav-links-desktop {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.15rem;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.nav-links a {
+.nav-links-desktop a {
   display: block;
-  padding: 0.5rem 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  padding: 0.5rem 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 500;
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
 }
 
-.nav-links a:hover,
-.nav-links a.router-link-exact-active {
+.nav-links-desktop a:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.nav-links-desktop a.router-link-exact-active {
+  color: #fff;
+  background: rgba(59, 130, 246, 0.15);
 }
 
 .nav-cta {
   background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
   color: #fff !important;
-  padding: 0.5rem 1.25rem !important;
+  padding: 0.45rem 1.15rem !important;
   border-radius: 8px !important;
-  margin-left: 0.5rem;
+  margin-left: 0.35rem;
+  font-weight: 600 !important;
 }
 
 .nav-cta:hover {
@@ -195,12 +223,12 @@ const userInitial = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.35rem 0.85rem 0.35rem 0.35rem !important;
+  padding: 0.3rem 0.75rem 0.3rem 0.3rem !important;
   background: rgba(255, 255, 255, 0.06) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px !important;
   color: #fff !important;
-  transition: all 0.2s ease;
+  margin-left: 0.35rem;
 }
 
 .nav-profile:hover {
@@ -209,21 +237,21 @@ const userInitial = computed(() => {
 }
 
 .nav-avatar {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: linear-gradient(135deg, #3b82f6, #8b5cf6);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
 }
 
 .nav-profile-name {
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   font-weight: 500;
 }
 
@@ -237,27 +265,39 @@ const userInitial = computed(() => {
   letter-spacing: 0.03em;
 }
 
-/* Hamburger */
+/* ═══════ Hamburger ═══════ */
 .hamburger {
   display: none;
   flex-direction: column;
+  justify-content: center;
   gap: 5px;
   background: none;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
   cursor: pointer;
-  padding: 8px;
-  z-index: 1010;
+  padding: 10px 9px;
+  z-index: 1100;
   -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.2s;
+}
+
+.hamburger:hover,
+.hamburger:active {
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .hamburger span {
   display: block;
-  width: 24px;
+  width: 20px;
   height: 2px;
   background: #fff;
   border-radius: 2px;
   transition: all 0.3s ease;
   transform-origin: center;
+}
+
+.hamburger.active {
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .hamburger.active span:nth-child(1) {
@@ -266,117 +306,163 @@ const userInitial = computed(() => {
 
 .hamburger.active span:nth-child(2) {
   opacity: 0;
+  transform: scaleX(0);
 }
 
 .hamburger.active span:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* ─── Tablet breakpoint (≤ 900px) ─── */
-@media (max-width: 900px) {
-  .nav-links a {
-    padding: 0.5rem 0.65rem;
-    font-size: 0.84rem;
-  }
+/* ═══════ Mobile overlay ═══════ */
+.mobile-overlay {
+  display: none;
 }
 
-/* ─── Mobile breakpoint (≤ 768px) ─── */
+/* ═══════ Mobile slide-in menu ═══════ */
+.mobile-menu {
+  display: none;
+}
+
+/* ═══════ Transition for overlay ═══════ */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════════════
+   MOBILE — ≤ 768px
+   ═══════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .navbar-inner {
-    padding: 0 1rem;
+  .nav-links-desktop {
+    display: none;
   }
 
   .hamburger {
     display: flex;
   }
 
-  .nav-links-wrapper {
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .mobile-menu {
     display: block;
     position: fixed;
     top: 0;
-    left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1005;
-    pointer-events: none;
-    visibility: hidden;
-  }
-
-  .nav-links-wrapper.open {
-    pointer-events: auto;
-    visibility: visible;
-  }
-
-  .nav-overlay {
-    display: block;
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .nav-links-wrapper.open .nav-overlay {
-    opacity: 1;
-  }
-
-  .nav-links {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 280px;
-    max-width: 80vw;
-    height: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    background: rgba(15, 23, 42, 0.99);
-    backdrop-filter: blur(16px);
-    padding: 80px 1.25rem 2rem;
-    gap: 0.25rem;
+    width: 300px;
+    max-width: 85vw;
+    z-index: 1060;
+    background: #0d1529;
     border-left: 1px solid rgba(255, 255, 255, 0.08);
     transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  .nav-links.open {
+  .mobile-menu.open {
     transform: translateX(0);
   }
 
-  .nav-links a {
-    width: 100%;
-    padding: 0.75rem 1rem;
+  .mobile-links {
+    list-style: none;
+    padding: 80px 1rem 2rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mobile-links li a {
+    display: block;
+    padding: 14px 16px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-weight: 500;
+    border-radius: 12px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .mobile-links li a:active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .mobile-links li a.router-link-exact-active {
+    color: #fff;
+    background: rgba(59, 130, 246, 0.15);
+    font-weight: 600;
+  }
+
+  .mobile-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 8px 16px;
+  }
+
+  .mobile-cta {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+    color: #fff !important;
+    text-align: center;
+    font-weight: 600 !important;
+    font-size: 1.05rem !important;
+    padding: 14px 16px !important;
+  }
+
+  .mobile-profile-link {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-avatar-lg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 1rem;
-    border-radius: 10px;
-    text-align: left;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
   }
 
-  .nav-links a:hover,
-  .nav-links a.router-link-exact-active {
-    background: rgba(255, 255, 255, 0.06);
+  .mobile-profile-name {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
   }
 
-  .nav-cta-item {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  .mobile-profile-sub {
+    display: block;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 1px;
   }
 
-  .nav-cta {
-    margin-left: 0 !important;
-    text-align: center !important;
-    padding: 0.75rem 1.25rem !important;
-  }
-
-  .nav-profile {
-    justify-content: flex-start;
-    width: 100%;
-    padding: 0.65rem 1rem 0.65rem 0.65rem !important;
+  .pro-tag-mobile {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
   }
 }
 
-/* ─── Small phones (≤ 480px) ─── */
+/* ═══════ Small phones — ≤ 480px ═══════ */
 @media (max-width: 480px) {
   .navbar-inner {
     padding: 0 0.75rem;
@@ -384,26 +470,29 @@ const userInitial = computed(() => {
   }
 
   .navbar-brand {
-    font-size: 1.05rem;
+    font-size: 1rem;
     gap: 0.35rem;
   }
 
   .brand-icon {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
 
-  .nav-links {
-    padding-top: 72px;
+  .mobile-menu {
     width: 100%;
     max-width: 100%;
     border-left: none;
   }
+
+  .mobile-links {
+    padding-top: 68px;
+  }
 }
 
-/* ─── Very small phones (≤ 360px) ─── */
+/* ═══════ Very small phones — ≤ 360px ═══════ */
 @media (max-width: 360px) {
   .brand-text {
-    font-size: 0.92rem;
+    font-size: 0.88rem;
   }
 }
 </style>
