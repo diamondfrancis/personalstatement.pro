@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { useAuth } from '../stores/auth'
 
-const { isAuthenticated, user, isPro } = useAuth()
 const route = useRoute()
 
 const menuOpen = ref(false)
@@ -40,10 +38,6 @@ onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
   document.body.style.overflow = ''
 })
-
-const userInitial = computed(() =>
-  (user.value?.name ?? 'U').charAt(0).toUpperCase()
-)
 </script>
 
 <template>
@@ -61,21 +55,7 @@ const userInitial = computed(() =>
         <li><RouterLink to="/blog">Blog</RouterLink></li>
         <li><RouterLink to="/jobs">Jobs</RouterLink></li>
         <li><RouterLink to="/about">About</RouterLink></li>
-        <li>
-          <RouterLink to="/pricing" class="nav-pricing">
-            <span v-if="!isPro">Pricing</span>
-            <span v-else class="pro-tag">PRO ✓</span>
-          </RouterLink>
-        </li>
-        <li v-if="!isAuthenticated">
-          <RouterLink to="/auth" class="nav-cta">Sign In</RouterLink>
-        </li>
-        <li v-else>
-          <RouterLink to="/profile" class="nav-profile">
-            <span class="nav-avatar">{{ userInitial }}</span>
-            <span class="nav-profile-name">{{ user?.name || 'Profile' }}</span>
-          </RouterLink>
-        </li>
+        <li><RouterLink to="/pricing">Pricing</RouterLink></li>
       </ul>
 
       <!-- Hamburger button -->
@@ -103,25 +83,7 @@ const userInitial = computed(() =>
         <li><RouterLink to="/blog" @click="closeMenu">📰 Blog</RouterLink></li>
         <li><RouterLink to="/jobs" @click="closeMenu">💼 Job Prospects</RouterLink></li>
         <li><RouterLink to="/about" @click="closeMenu">ℹ️ About</RouterLink></li>
-        <li>
-          <RouterLink to="/pricing" @click="closeMenu">
-            <span v-if="!isPro">💎 Pricing</span>
-            <span v-else class="pro-tag-mobile">⭐ PRO Active</span>
-          </RouterLink>
-        </li>
-        <li class="mobile-divider"></li>
-        <li v-if="!isAuthenticated">
-          <RouterLink to="/auth" @click="closeMenu" class="mobile-cta">Sign In / Sign Up</RouterLink>
-        </li>
-        <li v-else>
-          <RouterLink to="/profile" @click="closeMenu" class="mobile-profile-link">
-            <span class="nav-avatar-lg">{{ userInitial }}</span>
-            <div>
-              <span class="mobile-profile-name">{{ user?.name || 'Profile' }}</span>
-              <span class="mobile-profile-sub">View Profile</span>
-            </div>
-          </RouterLink>
-        </li>
+        <li><RouterLink to="/pricing" @click="closeMenu">💎 Pricing</RouterLink></li>
       </ul>
     </div>
   </nav>
