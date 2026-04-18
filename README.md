@@ -47,22 +47,41 @@ npm run preview
 ## Project Structure
 
 ```
-src/
-├── assets/          # Global CSS (base reset, main styles)
-├── components/      # Reusable components (NavBar, AppFooter, icons)
-├── data/            # Static data (blog posts)
-├── router/          # Vue Router configuration
-├── stores/          # Auth state management
-└── views/           # Page components
-    ├── LandingPage.vue
-    ├── StatementAnalyzer.vue
-    ├── PricingPage.vue
-    ├── AuthPage.vue
-    ├── ProfilePage.vue
-    ├── JobProspects.vue
-    ├── AboutPage.vue
-    ├── BlogList.vue
-    └── BlogPost.vue
+├── index.html               # Entry HTML with SEO meta tags & structured data
+├── vite.config.ts            # Vite build configuration
+├── tsconfig.json             # TypeScript config
+├── package.json
+├── public/
+│   ├── favicon.svg
+│   ├── robots.txt            # Search engine crawl rules
+│   └── sitemap.xml           # Sitemap for Google indexing
+└── src/
+    ├── App.vue               # Root component
+    ├── main.ts               # App entry point
+    ├── assets/               # Global CSS (base reset, main styles)
+    ├── components/           # Reusable components
+    │   ├── AppFooter.vue
+    │   ├── HelloWorld.vue
+    │   ├── NavBar.vue
+    │   ├── TheWelcome.vue
+    │   ├── WelcomeItem.vue
+    │   └── icons/            # SVG icon components
+    ├── data/                 # Static data (blog posts)
+    │   └── blogPosts.ts
+    ├── router/               # Vue Router config with per-page SEO titles
+    │   └── index.ts
+    ├── stores/               # Auth state management
+    │   └── auth.ts
+    └── views/                # Page components
+        ├── AboutPage.vue
+        ├── AuthPage.vue
+        ├── BlogList.vue
+        ├── BlogPost.vue
+        ├── JobProspects.vue
+        ├── LandingPage.vue
+        ├── PricingPage.vue
+        ├── ProfilePage.vue
+        └── StatementAnalyzer.vue
 ```
 
 ## License
