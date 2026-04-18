@@ -135,15 +135,15 @@ const userInitial = computed(() =>
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(11, 17, 32, 0.97);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: #0f1a2e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: box-shadow 0.3s ease;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .navbar.scrolled {
-  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 
 .navbar-inner {
@@ -362,12 +362,13 @@ const userInitial = computed(() =>
     width: 300px;
     max-width: 85vw;
     z-index: 1060;
-    background: #0d1529;
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    background: #0f1a2e;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
     transform: translateX(100%);
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    padding-top: env(safe-area-inset-top, 0px);
   }
 
   .mobile-menu.open {
